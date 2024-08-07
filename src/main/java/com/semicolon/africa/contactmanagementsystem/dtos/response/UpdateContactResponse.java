@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UpdateContactResponse {
-//    private String id;
+    private String id;
     private String updatedFirstName;
     private String updatedLastName;
     private String updatedPhoneNumber;

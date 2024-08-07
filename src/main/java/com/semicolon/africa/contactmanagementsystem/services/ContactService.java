@@ -7,10 +7,16 @@ import com.semicolon.africa.contactmanagementsystem.dtos.response.CreateContactR
 import com.semicolon.africa.contactmanagementsystem.dtos.response.DeleteContactResponse;
 import com.semicolon.africa.contactmanagementsystem.dtos.response.UpdateContactResponse;
 
+import java.util.List;
+
 public interface ContactService {
     CreateContactResponse createContactWith(CreateContactRequest request);
     Long getTotalContacts();
     DeleteContactResponse deleteContact(String  contactId);
 
     UpdateContactResponse updateContactWith(UpdateContactRequest request);
+
+    List<Contact> getAllContacts();
+
+    List<Contact> findContactByName(String name);
 }

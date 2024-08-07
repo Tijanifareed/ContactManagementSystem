@@ -12,6 +12,11 @@ import com.semicolon.africa.contactmanagementsystem.exceptions.PhoneNumberExists
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.semicolon.africa.contactmanagementsystem.utils.MapUtils.mapContactUpdateResponse;
+
 @Service
 public class ContactServiceImpl implements ContactService {
 
@@ -67,20 +72,31 @@ public class ContactServiceImpl implements ContactService {
         contact.setAddress(request.getUpdatedAddress());
         contact.setId(request.getId());
         contact = contactRepository.save(contact);
-        UpdateContactResponse response = new UpdateContactResponse();
+        return mapContactUpdateResponse(contact);
 
+    }
+
+    @Override
+    public List<Contact> getAllContacts() {
+        return contactRepository.findAll();
+    }
+
+    @Override
+    public List<Contact> findContactByName(String name) {
+        List<Contact> contacts = new ArrayList<>();
+        List<Contact> contact = contactRepository.findAll();
+        for(Contact elements : contact){
+            if(elements.getFirstName().equals(name) || elements.getLastName().equals(name)){
+                contacts.add(elements);
+            }
+        }
+        return contacts;
     }
 
     private Contact findById(String contactId) {
         return contactRepository.findById(contactId).orElseThrow(() -> new ContactNotFoundException("contact not found "));
     }
 
-    public static UpdateNoteResponse mapNoteUpdateResponse(Note note){
-        UpdateNoteResponse response = new UpdateNoteResponse();
-        response.setNoteId(note.getId());
-        response.setUpdatedTitle(note.getTitle());
-        response.setUpdatedContent(note.getContent());
-        response.setDateUpdated(note.getDateModified());
-        return response;
-    }
+
+
 }
