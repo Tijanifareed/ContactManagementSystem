@@ -3,6 +3,7 @@ package com.semicolon.africa.contactmanagementsystem.services;
 import com.semicolon.africa.contactmanagementsystem.data.model.Contact;
 import com.semicolon.africa.contactmanagementsystem.data.repositories.ContactRepository;
 import com.semicolon.africa.contactmanagementsystem.dtos.request.CreateContactRequest;
+import com.semicolon.africa.contactmanagementsystem.dtos.request.DeleteContactRequest;
 import com.semicolon.africa.contactmanagementsystem.dtos.request.UpdateContactRequest;
 import com.semicolon.africa.contactmanagementsystem.dtos.response.CreateContactResponse;
 import com.semicolon.africa.contactmanagementsystem.dtos.response.DeleteContactResponse;
@@ -51,8 +52,10 @@ public class ContactServiceImplTest {
     @Test
     public void testDeleteContact() {
         CreateContactResponse response = createNewContact();
+        DeleteContactRequest request = new DeleteContactRequest();
+        request.setContactId(response.getId());
         String contactId = response.getId();
-        DeleteContactResponse response1 = contactService.deleteContact(contactId);
+        DeleteContactResponse response1 = contactService.deleteContact(request);
         assertThat(response1.getMessage()).contains("deleted");
     }
 
@@ -73,14 +76,15 @@ public class ContactServiceImplTest {
     public void testThatCanEditContact() {
         CreateContactResponse response = createNewContact();
         UpdateContactRequest request = new UpdateContactRequest();
-        request.setUpdatedFirstName("freddies");
+        request.setUpdatedFirstName("Horla");
         request.setUpdatedLastName("Teejay");
-    request.setUpdatedEmail("tij@gmail.com");
-        request.setUpdatedPhoneNumber("08084562163");
-        request.setUpdatedAddress("Aradagun,badagry");
+        request.setUpdatedEmail("tij@gmail.com");
+        request.setUpdatedPhoneNumber("09084562163");
+        request.setUpdatedAddress("Aradagun,badagry,lagos");
         request.setId(response.getId());
         UpdateContactResponse response1 = contactService.updateContactWith(request);
-        assertThat(response1.getUpdatedFirstName()).isNotNull();
+        assertThat(response1.getUpdatedFirstName()).contains("Horla");
+        assertThat(response).isNotNull();
     }
 
     @Test
@@ -106,23 +110,6 @@ public class ContactServiceImplTest {
         assertThat(contact).isNotNull();
         assertThat(contact.size()).isEqualTo(2);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     private CreateContactResponse createSecondContact() {

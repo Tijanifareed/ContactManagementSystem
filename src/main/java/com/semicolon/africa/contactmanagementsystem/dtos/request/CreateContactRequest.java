@@ -8,12 +8,11 @@ import org.springframework.data.annotation.Id;
 @Getter
 @Setter
 public class CreateContactRequest {
+    private String id;
     private String firstName;
     private String lastName;
     private String phoneNumber;
     private String email;
     private String address;
-    private String id;
-
-
+    private String ownerEmail;
 }

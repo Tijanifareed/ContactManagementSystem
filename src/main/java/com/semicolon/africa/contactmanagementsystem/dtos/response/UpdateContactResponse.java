@@ -11,6 +11,6 @@ public class UpdateContactResponse {
     private String updatedFirstName;
     private String updatedLastName;
     private String updatedPhoneNumber;
-    private String updatedEmail;
-    private String updatedAddress;
+//    private String updatedEmail;
+//    private String updatedAddress;
 }

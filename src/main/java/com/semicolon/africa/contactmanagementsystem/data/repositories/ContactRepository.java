@@ -4,11 +4,11 @@ import com.semicolon.africa.contactmanagementsystem.data.model.Contact;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+
 
 
 public interface ContactRepository extends MongoRepository<Contact, String> {
     boolean existsByPhoneNumber(String phoneNumber);
 
-    List<Contact> findByFirstName(String firstName);
+//    List<Contact> findByFirstName(String firstName);
 }

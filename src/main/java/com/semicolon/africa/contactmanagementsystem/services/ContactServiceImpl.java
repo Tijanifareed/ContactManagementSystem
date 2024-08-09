@@ -3,6 +3,7 @@ package com.semicolon.africa.contactmanagementsystem.services;
 import com.semicolon.africa.contactmanagementsystem.data.model.Contact;
 import com.semicolon.africa.contactmanagementsystem.data.repositories.ContactRepository;
 import com.semicolon.africa.contactmanagementsystem.dtos.request.CreateContactRequest;
+import com.semicolon.africa.contactmanagementsystem.dtos.request.DeleteContactRequest;
 import com.semicolon.africa.contactmanagementsystem.dtos.request.UpdateContactRequest;
 import com.semicolon.africa.contactmanagementsystem.dtos.response.CreateContactResponse;
 import com.semicolon.africa.contactmanagementsystem.dtos.response.DeleteContactResponse;
@@ -11,11 +12,12 @@ import com.semicolon.africa.contactmanagementsystem.exceptions.ContactNotFoundEx
 import com.semicolon.africa.contactmanagementsystem.exceptions.PhoneNumberExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import static com.semicolon.africa.contactmanagementsystem.utils.MapUtils.mapContactUpdateResponse;
+import static com.semicolon.africa.contactmanagementsystem.utils.MapUtils.contactRequestMapper;
+
+
 
 @Service
 public class ContactServiceImpl implements ContactService {
@@ -26,16 +28,16 @@ public class ContactServiceImpl implements ContactService {
     public CreateContactResponse createContactWith(CreateContactRequest request) {
         validatePhoneNumber(request.getPhoneNumber());
         Contact contact = new Contact();
-        contact.setFirstName(request.getFirstName());
-        contact.setLastName(request.getLastName());
-        contact.setEmail(request.getEmail());
-        contact.setPhoneNumber(request.getPhoneNumber());
-        contactRepository.save(contact);
+//        contact.setFirstName(request.getFirstName());
+//        contact.setLastName(request.getLastName());
+//        contact.setEmail(request.getEmail());
+//        contact.setPhoneNumber(request.getPhoneNumber());
+        contactRepository.save(contactRequestMapper(contact,request));
         CreateContactResponse response = new CreateContactResponse();
-        response.setEmail(contact.getEmail());
         response.setPhoneNumber(contact.getPhoneNumber());
         response.setFirstName(contact.getFirstName());
         response.setLastName(contact.getLastName());
+        response.setMessage("Contact created successfully");
         response.setId(contact.getId());
         return response;
     }
@@ -54,8 +56,8 @@ public class ContactServiceImpl implements ContactService {
 
 
     @Override
-    public DeleteContactResponse deleteContact(String contactId) {
-        Contact contact = findById(contactId);
+    public DeleteContactResponse deleteContact(DeleteContactRequest request) {
+        Contact contact = findById(request.getContactId());
         contactRepository.delete(contact);
         DeleteContactResponse response = new DeleteContactResponse();
         response.setMessage("contact deleted successfully");
@@ -91,6 +93,17 @@ public class ContactServiceImpl implements ContactService {
             }
         }
         return contacts;
+    }
+
+    @Override
+    public Contact findContactByPhoneNumber(String phoneNumber) {
+        List<Contact> contacts = contactRepository.findAll();
+
+        for(Contact elements : contacts){
+            if(elements.getPhoneNumber().equals(phoneNumber)) contacts.add(elements);
+            return elements;
+        }throw new ContactNotFoundException("Contact not found");
+
     }
 
     private Contact findById(String contactId) {
