@@ -1,10 +1,8 @@
 package com.semicolon.africa.contactmanagementsystem.controllers;
 
 
-import com.semicolon.africa.contactmanagementsystem.dtos.request.CreateContactRequest;
-import com.semicolon.africa.contactmanagementsystem.dtos.request.DeleteContactRequest;
-import com.semicolon.africa.contactmanagementsystem.dtos.request.LoginRequest;
-import com.semicolon.africa.contactmanagementsystem.dtos.request.RegisterUserRequest;
+import com.semicolon.africa.contactmanagementsystem.data.model.Contact;
+import com.semicolon.africa.contactmanagementsystem.dtos.request.*;
 import com.semicolon.africa.contactmanagementsystem.dtos.response.*;
 import com.semicolon.africa.contactmanagementsystem.exceptions.MyContactsException;
 import com.semicolon.africa.contactmanagementsystem.services.UserService;
@@ -15,13 +13,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.schema.MongoJsonSchema;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CREATED;
+import java.util.List;
+
+import static org.springframework.http.HttpStatus.*;
 
 @Controller
 @RequestMapping("/api/v1/user")
@@ -70,6 +66,47 @@ public class UserController {
             return new ResponseEntity<>(new ApiResponse(false,exception.getMessage()), BAD_REQUEST);
         }
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestBody LogoutRequest request) {
+        try {
+            LogoutResponse response = userService.logout(request);
+            return new ResponseEntity<>(new ApiResponse(true,response), CREATED);
+        }
+        catch (Exception exception){
+            return new ResponseEntity<>(new ApiResponse(false,exception.getMessage()), BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/find-all-contact")
+    public ResponseEntity<?> findAllContact() {
+        List<Contact> contact = userService.getAllContacts();
+        return ResponseEntity.ok(contact);
+    }
+
+    @GetMapping("/find-contact-byName")
+    public ResponseEntity<?> findContactByName(@RequestBody SearchContactRequest request) {
+        List<Contact> contact = userService.findContactByName(request.getName());
+        return ResponseEntity.ok(contact);
+    }
+
+    @GetMapping("/find-contact-byPhoneNumber")
+    public ResponseEntity<?> findContactByPhoneNumber(@RequestBody SearchContactRequest request) {
+        Contact contact = userService.findContactByPhoneNumber(request.getPhoneNumber());
+        return ResponseEntity.ok(contact);
+    }
+
+    @PatchMapping("/update-contact")
+    public ResponseEntity<?> updateContact(@RequestBody UpdateContactRequest updateContactRequest) {
+        try{
+            UpdateContactResponse updateContactResponse = userService.updateContactWith(updateContactRequest);
+            return new ResponseEntity<>(new ApiResponse(true, updateContactResponse), OK);
+        }
+        catch(Exception exception){
+            return new ResponseEntity<>(new ApiResponse(false, exception), BAD_REQUEST);
+        }
+    }
+
 
 
 }

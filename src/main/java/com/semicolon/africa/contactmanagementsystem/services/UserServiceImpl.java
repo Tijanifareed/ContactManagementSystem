@@ -104,6 +104,16 @@ public class UserServiceImpl implements UserService{
         return contactService.findContactByName(name);
     }
 
+    @Override
+    public Contact findContactByPhoneNumber(String phoneNumber) {
+        return contactService.findContactByPhoneNumber(phoneNumber);
+    }
+
+    @Override
+    public UpdateContactResponse updateContactWith(UpdateContactRequest updateContactRequest) {
+        return contactService.updateContactWith(updateContactRequest);
+    }
+
     private Contact findById(String contactId) {
         return contactRepository.findById(contactId).orElseThrow(() -> new ContactNotFoundException("contact not found "));
     }

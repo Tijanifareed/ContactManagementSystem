@@ -26,4 +26,7 @@ public interface UserService {
 
     List<Contact> findContactByName(String fareed);
 
+    Contact findContactByPhoneNumber(String phoneNumber);
+
+    UpdateContactResponse updateContactWith(UpdateContactRequest updateContactRequest);
 }
