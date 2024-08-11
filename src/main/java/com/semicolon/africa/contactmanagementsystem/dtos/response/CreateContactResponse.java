@@ -9,9 +9,9 @@ import lombok.Setter;
 @Setter
 public class CreateContactResponse {
 
-    private String id;
-    private String firstName;
-    private String lastName;
+//    private String id;
+//    private String firstName;
+//    private String lastName;
     private String phoneNumber;
     private String message;
 }

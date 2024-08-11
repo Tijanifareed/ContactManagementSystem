@@ -4,20 +4,10 @@ import com.semicolon.africa.contactmanagementsystem.data.model.Contact;
 import com.semicolon.africa.contactmanagementsystem.data.model.User;
 import com.semicolon.africa.contactmanagementsystem.data.repositories.ContactRepository;
 import com.semicolon.africa.contactmanagementsystem.data.repositories.UserRepository;
-import com.semicolon.africa.contactmanagementsystem.dtos.request.CreateContactRequest;
-import com.semicolon.africa.contactmanagementsystem.dtos.request.LoginRequest;
-import com.semicolon.africa.contactmanagementsystem.dtos.request.LogoutRequest;
-import com.semicolon.africa.contactmanagementsystem.dtos.request.RegisterUserRequest;
-import com.semicolon.africa.contactmanagementsystem.dtos.response.CreateContactResponse;
-import com.semicolon.africa.contactmanagementsystem.dtos.response.LoginResponse;
-import com.semicolon.africa.contactmanagementsystem.dtos.response.LogoutResponse;
-import com.semicolon.africa.contactmanagementsystem.dtos.response.RegisterUserResponse;
-import com.semicolon.africa.contactmanagementsystem.exceptions.EmailExistsException;
-import com.semicolon.africa.contactmanagementsystem.exceptions.IncorrectPasswordException;
-import com.semicolon.africa.contactmanagementsystem.exceptions.UserLoginException;
-import com.semicolon.africa.contactmanagementsystem.exceptions.UserNotFoundException;
+import com.semicolon.africa.contactmanagementsystem.dtos.request.*;
+import com.semicolon.africa.contactmanagementsystem.dtos.response.*;
+import com.semicolon.africa.contactmanagementsystem.exceptions.*;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,7 +31,7 @@ public class UserServiceImpl implements UserService{
 //        user.setFirstName(request.getFirstName());
 //        user.setLastName(request.getLastName());
 //        user.setEmail(request.getEmail());
-//        user.setPassword(request.getPassword());
+//        user.setPassword(request.getPassword())
         userRepository.save(registerUserMapper(user,request));
         RegisterUserResponse response = new RegisterUserResponse();
         response.setEmail(user.getEmail());
@@ -73,7 +63,7 @@ public class UserServiceImpl implements UserService{
         User user = findByEmail(request.getOwnerEmail());
         validateUserLogin(user);
         CreateContactResponse response = contactService.createContactWith(request);
-        Contact contact = contactService.findContactByPhoneNumber(response.getPhoneNumber());
+        Contact contact = contactService.findContactByPhoneNumber(request.getPhoneNumber());
         List<Contact> contacts = new ArrayList<>();
         contacts.add(contact);
         user.setContacts(contacts);
@@ -90,6 +80,32 @@ public class UserServiceImpl implements UserService{
         response.setMessage("user logged out successfully");
         response.setLoggedIn(user.isLoggedIn());
         return response;
+    }
+
+    @Override
+    public DeleteContactResponse deleteContact(DeleteContactRequest request) {
+        return contactService.deleteContact(request);
+    }
+
+
+
+    @Override
+    public UpdateContactResponse updateContacts(UpdateContactRequest request2) {
+        return contactService.updateContactWith(request2);
+    }
+
+    @Override
+    public List<Contact> getAllContacts() {
+        return contactService.getAllContacts();
+    }
+
+    @Override
+    public List<Contact> findContactByName(String name) {
+        return contactService.findContactByName(name);
+    }
+
+    private Contact findById(String contactId) {
+        return contactRepository.findById(contactId).orElseThrow(() -> new ContactNotFoundException("contact not found "));
     }
 
     private void validateUserLogin(User user) {

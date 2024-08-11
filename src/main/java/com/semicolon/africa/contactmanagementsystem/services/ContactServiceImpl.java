@@ -34,11 +34,7 @@ public class ContactServiceImpl implements ContactService {
 //        contact.setPhoneNumber(request.getPhoneNumber());
         contactRepository.save(contactRequestMapper(contact,request));
         CreateContactResponse response = new CreateContactResponse();
-        response.setPhoneNumber(contact.getPhoneNumber());
-        response.setFirstName(contact.getFirstName());
-        response.setLastName(contact.getLastName());
         response.setMessage("Contact created successfully");
-        response.setId(contact.getId());
         return response;
     }
 
@@ -57,7 +53,7 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public DeleteContactResponse deleteContact(DeleteContactRequest request) {
-        Contact contact = findById(request.getContactId());
+        Contact contact = findContactByPhoneNumber(request.getPhoneNumber());
         contactRepository.delete(contact);
         DeleteContactResponse response = new DeleteContactResponse();
         response.setMessage("contact deleted successfully");
@@ -66,7 +62,7 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public UpdateContactResponse updateContactWith(UpdateContactRequest request) {
-        Contact contact = findById(request.getId());
+        Contact contact = findContactByPhoneNumber(request.getUpdatedPhoneNumber());
         contact.setFirstName(request.getUpdatedFirstName());
         contact.setLastName(request.getUpdatedLastName());
         contact.setPhoneNumber(request.getUpdatedPhoneNumber());
@@ -77,6 +73,7 @@ public class ContactServiceImpl implements ContactService {
         return mapContactUpdateResponse(contact);
 
     }
+
 
     @Override
     public List<Contact> getAllContacts() {

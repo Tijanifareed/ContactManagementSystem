@@ -1,21 +1,19 @@
 package com.semicolon.africa.contactmanagementsystem.services;
 
+import com.semicolon.africa.contactmanagementsystem.data.model.Contact;
 import com.semicolon.africa.contactmanagementsystem.data.repositories.ContactRepository;
 import com.semicolon.africa.contactmanagementsystem.data.repositories.UserRepository;
-import com.semicolon.africa.contactmanagementsystem.dtos.request.CreateContactRequest;
-import com.semicolon.africa.contactmanagementsystem.dtos.request.LoginRequest;
-import com.semicolon.africa.contactmanagementsystem.dtos.request.LogoutRequest;
-import com.semicolon.africa.contactmanagementsystem.dtos.request.RegisterUserRequest;
-import com.semicolon.africa.contactmanagementsystem.dtos.response.CreateContactResponse;
-import com.semicolon.africa.contactmanagementsystem.dtos.response.LoginResponse;
-import com.semicolon.africa.contactmanagementsystem.dtos.response.LogoutResponse;
-import com.semicolon.africa.contactmanagementsystem.dtos.response.RegisterUserResponse;
+import com.semicolon.africa.contactmanagementsystem.dtos.request.*;
+import com.semicolon.africa.contactmanagementsystem.dtos.response.*;
 import com.semicolon.africa.contactmanagementsystem.exceptions.EmailExistsException;
 import com.semicolon.africa.contactmanagementsystem.exceptions.IncorrectPasswordException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -98,7 +96,7 @@ public class UserServiceImplTest {
         request.setAddress("buhari estate");
         request.setOwnerEmail("email@email.com");
         CreateContactResponse response1 = userService.createContact(request);
-        assertThat(response1.getId()).isNotNull();
+        assertThat(userService.getAllContacts().size()).isEqualTo(1);
 
     }
 
@@ -111,4 +109,88 @@ public class UserServiceImplTest {
         LogoutResponse response = userService.logout(request);
         assertThat(response.getMessage()).contains("logged out");
     }
+
+    @Test
+    public void testThatUserCanDeleteContact(){
+        createNewUser();
+        LoginResponse response1 = userLogin();
+        CreateContactRequest request = new CreateContactRequest();
+        request.setFirstName("Fareed");
+        request.setLastName("Tijani");
+        request.setEmail("fareedtijani2810@gmail.com");
+        request.setPhoneNumber("08084562163");
+        request.setAddress("buhari estate");
+        request.setOwnerEmail("email@email.com");
+        CreateContactResponse response2 = userService.createContact(request);
+        DeleteContactRequest request2 = new DeleteContactRequest();
+        request2.setPhoneNumber(request2.getPhoneNumber());
+        DeleteContactResponse response3 = userService.deleteContact(request2);
+        assertThat(response3.getMessage()).contains("deleted");
+
+    }
+
+    @Test
+    public void testThatUserCan_editContact(){
+        createNewUser();
+        LoginResponse response1 = userLogin();
+        CreateContactRequest request = new CreateContactRequest();
+        request.setFirstName("Fareed");
+        request.setLastName("Tijani");
+        request.setEmail("fareedtijani2810@gmail.com");
+        request.setPhoneNumber("08084562163");
+        request.setAddress("buhari estate");
+        request.setOwnerEmail("email@email.com");
+        CreateContactResponse response2 = userService.createContact(request);
+        UpdateContactRequest request2 = new UpdateContactRequest();
+//        request2.setId(response2.getId());
+        request2.setUpdatedPhoneNumber("2222");
+        request2.setUpdatedEmail("email@email.coms");
+        request2.setUpdatedAddress("buhari estates");
+        request2.setUpdatedLastName("Tinubu");
+        request2.setUpdatedFirstName("Jagaban");
+        UpdateContactResponse response = userService.updateContacts(request2);
+        assertThat(response.getUpdatedFirstName()).contains("Jagaban");
+
+    }
+
+    @Test
+    public void testThatUserCan_getAllContact(){
+        createNewUser();
+        LoginResponse response1 = userLogin();
+        CreateContactRequest request = new CreateContactRequest();
+        request.setFirstName("Fareed");
+        request.setLastName("Tijani");
+        request.setEmail("fareedtijani2810@gmail.com");
+        request.setPhoneNumber("08084562163");
+        request.setAddress("buhari estate");
+        request.setOwnerEmail("email@email.com");
+        CreateContactResponse response2 = userService.createContact(request);
+        List<Contact> contacts = userService.getAllContacts();
+        assertThat(contacts.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void testThatUserCan_getContactByName(){
+        createNewUser();
+        LoginResponse response1 = userLogin();
+        CreateContactRequest request = new CreateContactRequest();
+        request.setFirstName("Fareed");
+        request.setLastName("Tijani");
+        request.setEmail("fareedtijani2810@gmail.com");
+        request.setPhoneNumber("08084562163");
+        request.setAddress("buhari estate");
+        request.setOwnerEmail("email@email.com");
+        CreateContactResponse response2 = userService.createContact(request);
+        CreateContactRequest request2 = new CreateContactRequest();
+        request2.setFirstName("Fareed");
+        request2.setLastName("Tijani");
+        request2.setEmail("fareedtijani2810@gmail.cum");
+        request2.setPhoneNumber("09084562163");
+        request2.setAddress("buhari estates");
+        request2.setOwnerEmail("email@email.com");
+        CreateContactResponse response3 = userService.createContact(request2);
+        List<Contact> contacts = userService.findContactByName("Fareed");
+        assertThat(contacts.size()).isEqualTo(2);
+    }
+
 }

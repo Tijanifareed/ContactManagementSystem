@@ -2,20 +2,20 @@ package com.semicolon.africa.contactmanagementsystem.controllers;
 
 
 import com.semicolon.africa.contactmanagementsystem.dtos.request.CreateContactRequest;
+import com.semicolon.africa.contactmanagementsystem.dtos.request.DeleteContactRequest;
 import com.semicolon.africa.contactmanagementsystem.dtos.request.LoginRequest;
 import com.semicolon.africa.contactmanagementsystem.dtos.request.RegisterUserRequest;
-import com.semicolon.africa.contactmanagementsystem.dtos.response.ApiResponse;
-import com.semicolon.africa.contactmanagementsystem.dtos.response.CreateContactResponse;
-import com.semicolon.africa.contactmanagementsystem.dtos.response.LoginResponse;
-import com.semicolon.africa.contactmanagementsystem.dtos.response.RegisterUserResponse;
+import com.semicolon.africa.contactmanagementsystem.dtos.response.*;
 import com.semicolon.africa.contactmanagementsystem.exceptions.MyContactsException;
 import com.semicolon.africa.contactmanagementsystem.services.UserService;
 import com.semicolon.africa.contactmanagementsystem.services.UserServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.schema.MongoJsonSchema;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,5 +59,17 @@ public class UserController {
             return new ResponseEntity<>(new ApiResponse(false,exception.getMessage()), BAD_REQUEST);
         }
     }
+
+    @DeleteMapping("/delete-contact")
+    public ResponseEntity<?> deleteContact(@RequestBody DeleteContactRequest request) {
+        try{
+            DeleteContactResponse response = userService.deleteContact(request);
+            return new ResponseEntity<>(new ApiResponse(true,response), CREATED);
+        }
+        catch (Exception exception){
+            return new ResponseEntity<>(new ApiResponse(false,exception.getMessage()), BAD_REQUEST);
+        }
+    }
+
 
 }

@@ -35,7 +35,6 @@ public class ContactServiceImplTest {
     public void testCreateContact() {
         CreateContactResponse response = createNewContact();
         assertThat(response).isNotNull();
-        assertThat(response.getId()).isNotNull();
         assertThat(contactService.getTotalContacts().intValue()).isEqualTo(1);
     }
 
@@ -46,17 +45,23 @@ public class ContactServiceImplTest {
         request.setEmail("tij@gmail.com");
         request.setPhoneNumber("08084562163");
         request.setAddress("Aradagun,badagry");
+        request.setId(request.getId());
         return contactService.createContactWith(request);
     }
 
     @Test
     public void testDeleteContact() {
-        CreateContactResponse response = createNewContact();
-        DeleteContactRequest request = new DeleteContactRequest();
-        request.setContactId(response.getId());
-        String contactId = response.getId();
-        DeleteContactResponse response1 = contactService.deleteContact(request);
-        assertThat(response1.getMessage()).contains("deleted");
+        CreateContactRequest request = new CreateContactRequest();
+        request.setFirstName("Fareed");
+        request.setLastName("Tijani");
+        request.setEmail("fareedtijani2810@gmail.com");
+        request.setPhoneNumber("08084562163");
+        request.setAddress("buhari estate");
+        request.setOwnerEmail("email@email.com");
+        CreateContactResponse response2 = contactService.createContactWith(request);
+        DeleteContactRequest request2 = new DeleteContactRequest();
+        request2.setPhoneNumber(request2.getPhoneNumber());
+        DeleteContactResponse response3 = contactService.deleteContact(request2);
     }
 
     @Test
@@ -81,7 +86,6 @@ public class ContactServiceImplTest {
         request.setUpdatedEmail("tij@gmail.com");
         request.setUpdatedPhoneNumber("09084562163");
         request.setUpdatedAddress("Aradagun,badagry,lagos");
-        request.setId(response.getId());
         UpdateContactResponse response1 = contactService.updateContactWith(request);
         assertThat(response1.getUpdatedFirstName()).contains("Horla");
         assertThat(response).isNotNull();

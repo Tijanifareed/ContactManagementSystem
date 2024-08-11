@@ -7,5 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DeleteContactRequest {
-    private String contactId;
+    private String phoneNumber;
+//    private String contactId;
 }
