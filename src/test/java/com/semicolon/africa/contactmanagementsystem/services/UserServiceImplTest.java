@@ -72,7 +72,7 @@ public class UserServiceImplTest {
         LoginRequest request = new LoginRequest();
         request.setEmail("email@email.com");
         request.setPassword("password");
-        return userService.login(requests);
+        return userService.login(request);
     }
 
     @Test
