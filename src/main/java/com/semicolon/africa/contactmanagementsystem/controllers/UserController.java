@@ -22,6 +22,7 @@ import static org.springframework.http.HttpStatus.*;
 @Controller
 @RequestMapping("/api/v1/user")
 @AllArgsConstructor
+@CrossOrigin(origins = "*")
 public class UserController {
     @Autowired
     private UserService userService;

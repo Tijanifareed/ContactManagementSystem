@@ -8,4 +8,5 @@ import lombok.Setter;
 public class SearchContactRequest {
     private String name;
     private String phoneNumber;
+    private String ownerEmail;
 }
