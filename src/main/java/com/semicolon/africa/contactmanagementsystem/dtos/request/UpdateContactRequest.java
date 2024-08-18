@@ -8,9 +8,11 @@ import lombok.Setter;
 @Setter
 public class UpdateContactRequest{
     private String id;
+    private String phoneNumber;
     private String updatedFirstName;
     private String updatedLastName;
     private String updatedPhoneNumber;
     private String updatedEmail;
     private String updatedAddress;
+    private String ownerEmail;
 }

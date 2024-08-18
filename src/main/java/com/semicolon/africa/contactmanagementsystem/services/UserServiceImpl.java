@@ -13,8 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.semicolon.africa.contactmanagementsystem.utils.MapUtils.mapUserLogin;
-import static com.semicolon.africa.contactmanagementsystem.utils.MapUtils.registerUserMapper;
+import static com.semicolon.africa.contactmanagementsystem.utils.MapUtils.*;
 
 
 @Service
@@ -63,8 +62,8 @@ public class UserServiceImpl implements UserService{
         User user = findByEmail(request.getOwnerEmail());
         validateUserLogin(user);
         CreateContactResponse response = contactService.createContactWith(request);
-        Contact contact = contactService.findContactByPhoneNumber(request.getPhoneNumber());
-        List<Contact> contacts = new ArrayList<>();
+        Contact contact = contactService.findContactByPhoneNumber(response.getPhoneNumber());
+        List<Contact> contacts = user.getContacts();
         contacts.add(contact);
         user.setContacts(contacts);
         userRepository.save(user);
@@ -91,7 +90,22 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UpdateContactResponse updateContacts(UpdateContactRequest request2) {
-        return contactService.updateContactWith(request2);
+        User user = findByEmail(request2.getOwnerEmail());
+        List<Contact> contact = user.getContacts();
+        for(Contact contact1: contact){
+            if(contact1.getPhoneNumber().equals(request2.getPhoneNumber())){
+                contact1.setFirstName(request2.getUpdatedFirstName());
+                contact1.setLastName(request2.getUpdatedLastName());
+                contact1.setPhoneNumber(request2.getUpdatedPhoneNumber());
+                contact1.setEmail(request2.getUpdatedEmail());
+                contact1.setAddress(request2.getUpdatedAddress());
+                contact1.setId(request2.getId());
+                contactRepository.save(contact1);
+                return mapContactUpdateResponse(contact1);
+            }
+        }
+        throw new ContactNotFoundException("contact not found");
+
     }
 
     @Override
@@ -105,12 +119,20 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Contact findContactByPhoneNumber(String phoneNumber) {
-        return contactService.findContactByPhoneNumber(phoneNumber);
+    public Contact findContactByPhoneNumber(String phoneNumber, String email) {
+        User user = findByEmail(email);
+        List<Contact> contacts = user.getContacts();
+        for (Contact contact : contacts) {
+            if (contact.getPhoneNumber().equals(phoneNumber)) {
+                return contact;
+            }
+        }
+        throw new ContactNotFoundException("Contact not found");
     }
 
     @Override
     public UpdateContactResponse updateContactWith(UpdateContactRequest updateContactRequest) {
+
         return contactService.updateContactWith(updateContactRequest);
     }
 
@@ -132,4 +154,6 @@ public class UserServiceImpl implements UserService{
         return userRepository.findByEmail(email).orElseThrow(()->new UserNotFoundException("User not found"));
 
     }
+
+
 }

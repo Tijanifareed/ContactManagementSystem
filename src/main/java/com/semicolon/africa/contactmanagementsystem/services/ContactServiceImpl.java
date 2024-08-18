@@ -28,10 +28,6 @@ public class ContactServiceImpl implements ContactService {
     public CreateContactResponse createContactWith(CreateContactRequest request) {
         validatePhoneNumber(request.getPhoneNumber());
         Contact contact = new Contact();
-//        contact.setFirstName(request.getFirstName());
-//        contact.setLastName(request.getLastName());
-//        contact.setEmail(request.getEmail());
-//        contact.setPhoneNumber(request.getPhoneNumber());
         contactRepository.save(contactRequestMapper(contact,request));
         CreateContactResponse response = new CreateContactResponse();
         response.setMessage("Contact created successfully");
@@ -62,7 +58,7 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public UpdateContactResponse updateContactWith(UpdateContactRequest request) {
-        Contact contact = findContactByPhoneNumber(request.getUpdatedPhoneNumber());
+        Contact contact = findContactByPhoneNumber(request.getPhoneNumber());
         contact.setFirstName(request.getUpdatedFirstName());
         contact.setLastName(request.getUpdatedLastName());
         contact.setPhoneNumber(request.getUpdatedPhoneNumber());

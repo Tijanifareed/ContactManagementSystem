@@ -91,9 +91,9 @@ public class UserController {
         return ResponseEntity.ok(contact);
     }
 
-    @GetMapping("/find-contact-byPhoneNumber")
+    @PostMapping("/find-contact-byPhoneNumber")
     public ResponseEntity<?> findContactByPhoneNumber(@RequestBody SearchContactRequest request) {
-        Contact contact = userService.findContactByPhoneNumber(request.getPhoneNumber());
+        Contact contact = userService.findContactByPhoneNumber(request.getPhoneNumber(), request.getOwnerEmail());
         return ResponseEntity.ok(contact);
     }
 
